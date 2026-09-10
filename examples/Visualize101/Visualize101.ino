@@ -1,7 +1,7 @@
 #include <CurieIMU.h>
-#include <MadgwickAHRS.h>
+#include <MMadgwick_dynamicAHRS.h>
 
-Madgwick filter;
+Madgwick_dynamic filter;
 unsigned long microsPerReading, microsPrevious;
 float accelScale, gyroScale;
 
