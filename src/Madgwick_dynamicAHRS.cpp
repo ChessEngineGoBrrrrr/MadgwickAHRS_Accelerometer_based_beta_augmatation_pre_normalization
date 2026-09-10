@@ -19,7 +19,7 @@
 //-------------------------------------------------------------------------------------------
 // Header files
 
-#include "Madgwick1AHRS.h"
+#include "Madgwick_dynamicAHRS.h"
 #include <math.h>
 
 //-------------------------------------------------------------------------------------------
@@ -35,7 +35,7 @@
 //-------------------------------------------------------------------------------------------
 // AHRS algorithm update
 
-Madgwick1::Madgwick1() {
+Madgwick_dynamic::Madgwick_dynamic() {
 	beta = betaDef;
 	q0 = 1.0f;
 	q1 = 0.0f;
@@ -49,7 +49,7 @@ Madgwick1::Madgwick1() {
 	mod = 0;
 }
 
-void Madgwick1::update(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz) {
+void Madgwick_dynamic::update(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz) {
 	float recipNorm;
 	float s0, s1, s2, s3;
 	float qDot1, qDot2, qDot3, qDot4;
@@ -161,7 +161,7 @@ void Madgwick1::update(float gx, float gy, float gz, float ax, float ay, float a
 //-------------------------------------------------------------------------------------------
 // IMU algorithm update
 
-void Madgwick1::updateIMU(float gx, float gy, float gz, float ax, float ay, float az) {
+void Madgwick_dynamic::updateIMU(float gx, float gy, float gz, float ax, float ay, float az) {
 	float recipNorm;
 	float s0, s1, s2, s3;
 	float qDot1, qDot2, qDot3, qDot4;
@@ -239,7 +239,7 @@ void Madgwick1::updateIMU(float gx, float gy, float gz, float ax, float ay, floa
 // Fast inverse square-root
 // See: http://en.wikipedia.org/wiki/Fast_inverse_square_root
 
-float Madgwick1::invSqrt(float x) {
+float Madgwick_dynamic::invSqrt(float x) {
 	float halfx = 0.5f * x;
 	float y = x;
 	long i = *(long*)&y;
@@ -252,7 +252,7 @@ float Madgwick1::invSqrt(float x) {
 
 //-------------------------------------------------------------------------------------------
 
-void Madgwick1::computeAngles()
+void Madgwick_dynamic::computeAngles()
 {
 	roll = atan2f(q0*q1 + q2*q3, 0.5f - q1*q1 - q2*q2);
 	pitch = asinf(-2.0f * (q1*q3 - q0*q2));
