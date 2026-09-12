@@ -33,6 +33,7 @@ private:
     float pitch;
     float yaw;
     float maxBeta;    // max beta peak amplification
+    float peakWidthCoefficient;
     float hi;
     float low;
     float mod;

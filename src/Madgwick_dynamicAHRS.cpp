@@ -27,7 +27,8 @@
 
 #define sampleFreqDef   512.0f          // sample frequency in Hz
 #define betaDef         0.1f            // 2 * proportional gain
-#define betaPeakAmp		2.0f			// The peak of beta amplification
+#define betaPeakAmp		2.0f			// The max amount beta is multiplied by
+#define peakWidth		0.1f			// The width of the peak
 
 //============================================================================================
 // Functions
@@ -37,6 +38,7 @@
 
 Madgwick_dynamic::Madgwick_dynamic() {
 	beta = betaDef;
+	peakWidthCoefficient = 4/(peakWidth*peakWidth)
 	q0 = 1.0f;
 	q1 = 0.0f;
 	q2 = 0.0f;
@@ -44,7 +46,7 @@ Madgwick_dynamic::Madgwick_dynamic() {
 	invSampleFreq = 1.0f / sampleFreqDef;
 	anglesComputed = 0;
 	maxBeta = betaPeakAmp;
-	hi = 1 + sqrt((maxBeta-1)/10);
+	hi = 1 + sqrt((maxBeta-1)/peakWidthCoefficient);
 	low = 2- hi;
 	mod = 0;
 }
@@ -77,7 +79,7 @@ void Madgwick_dynamic::update(float gx, float gy, float gz, float ax, float ay, 
 		beta = 0.1;
 		mod = sqrt(ax*ax + ay*ay + az*az);
 		if (mod <= hi && mod >= low) {
-			beta = (-(mod-1)*(mod-1)*10 + maxBeta)*beta;
+			beta = (-(mod-1)*(mod-1)*peakWidthCoefficient + maxBeta)*beta;
 		} else if (mod > hi) {
 			beta = (hi/mod)*beta;
 		} else {
@@ -180,7 +182,15 @@ void Madgwick_dynamic::updateIMU(float gx, float gy, float gz, float ax, float a
 
 	// Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)
 	if(!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) {
-
+		beta = 0.1;
+		mod = sqrt(ax*ax + ay*ay + az*az);
+		if (mod <= hi && mod >= low) {
+			beta = (-(mod-1)*(mod-1)*peakWidthCoefficient + maxBeta)*beta;
+		} else if (mod > hi) {
+			beta = (hi/mod)*beta;
+		} else {
+			beta = (-(1/(mod- 1 - low)))*beta;
+		}
 		// Normalise accelerometer measurement
 		recipNorm = invSqrt(ax * ax + ay * ay + az * az);
 		ax *= recipNorm;
