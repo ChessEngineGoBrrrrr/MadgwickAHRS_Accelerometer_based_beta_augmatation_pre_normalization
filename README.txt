@@ -5,6 +5,9 @@ TLDR:
 	- peakWidth dictates the length of the section where beta is increased as opposed to decreased
 	- The 10dof variant of the algorithm requires the acceleration calculated by the altimiter in g or an equivalent system
 	- TO ADD lateral acceleration
+
+DESMOS GRAPH for the beta augmantation function: https://www.desmos.com/calculator/y3opzgqoec
+
 V 1.0
 The change to the original algorithm is changing beta based on accelerometer readings pre-normalization. 
 It works by amplifying beta, which prioritizes accelerometer and magnetometer readings when raised.
